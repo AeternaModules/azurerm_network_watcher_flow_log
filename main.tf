@@ -1,0 +1,31 @@
+resource "azurerm_network_watcher_flow_log" "network_watcher_flow_logs" {
+  for_each = var.network_watcher_flow_logs
+
+  enabled                   = each.value.enabled
+  name                      = each.value.name
+  network_watcher_name      = each.value.network_watcher_name
+  resource_group_name       = each.value.resource_group_name
+  storage_account_id        = each.value.storage_account_id
+  location                  = each.value.location
+  network_security_group_id = each.value.network_security_group_id
+  tags                      = each.value.tags
+  target_resource_id        = each.value.target_resource_id
+  version                   = each.value.version
+
+  retention_policy {
+    days    = each.value.retention_policy.days
+    enabled = each.value.retention_policy.enabled
+  }
+
+  dynamic "traffic_analytics" {
+    for_each = each.value.traffic_analytics != null ? [each.value.traffic_analytics] : []
+    content {
+      enabled               = traffic_analytics.value.enabled
+      interval_in_minutes   = traffic_analytics.value.interval_in_minutes
+      workspace_id          = traffic_analytics.value.workspace_id
+      workspace_region      = traffic_analytics.value.workspace_region
+      workspace_resource_id = traffic_analytics.value.workspace_resource_id
+    }
+  }
+}
+
