@@ -34,14 +34,14 @@ EOT
     network_security_group_id = optional(string)
     tags                      = optional(map(string))
     target_resource_id        = optional(string)
-    version                   = optional(number, 1)
+    version                   = optional(number) # Default: 1
     retention_policy = object({
       days    = number
       enabled = bool
     })
     traffic_analytics = optional(object({
       enabled               = bool
-      interval_in_minutes   = optional(number, 60)
+      interval_in_minutes   = optional(number) # Default: 60
       workspace_id          = string
       workspace_region      = string
       workspace_resource_id = string
