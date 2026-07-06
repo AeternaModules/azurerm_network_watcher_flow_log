@@ -47,5 +47,69 @@ EOT
       workspace_resource_id = string
     }))
   }))
+  validation {
+    condition = alltrue([
+      for k, v in var.network_watcher_flow_logs : (
+        v.traffic_analytics == null || (can(regex("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$", v.traffic_analytics.workspace_id)))
+      )
+    ])
+    error_message = "must be a valid UUID"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.network_watcher_flow_logs : (
+        v.version == null || (v.version >= 1 && v.version <= 2)
+      )
+    ])
+    error_message = "must be between 1 and 2"
+  }
+  # --- Unconfirmed validation candidates, derived from azurerm_network_watcher_flow_log's provider source ---
+  # Not auto-enabled: either a bespoke provider validator we can't safely translate,
+  # or a path that crosses a list-typed block (needs its own for_each wrapping).
+  # Review, translate into a real validation{} block above, and delete once confirmed.
+  # path: network_watcher_name
+  #   source:    validation.NoZeroValues(...) - no translation rule yet, add one
+  # path: resource_group_name
+  #   condition: length(value) <= 90
+  #   message:   [from resourcegroups.ValidateName: invalid when len(value) > 90]
+  #   source:    [from resourcegroups.ValidateName: invalid when len(value) > 90]
+  # path: resource_group_name
+  #   condition: !endswith(value, ".")
+  #   message:   [from resourcegroups.ValidateName: must not end with "."]
+  #   source:    [from resourcegroups.ValidateName: must not end with "."]
+  # path: resource_group_name
+  #   condition: length(value) != 0
+  #   message:   [from resourcegroups.ValidateName: invalid when len(value) == 0]
+  #   source:    [from resourcegroups.ValidateName: invalid when len(value) == 0]
+  # path: resource_group_name
+  #   source:    [from resourcegroups.ValidateName] !matched
+  # path: name
+  #   source:    [from validate.NetworkWatcherFlowLogName] !regexp.MustCompile(`^[^\W_]$|^[^\W_][\w.\-]{0,78}[\w]$`).MatchString(value)
+  # path: target_resource_id
+  #   source:    validation.Any(...) - no translation rule yet, add one
+  # path: storage_account_id
+  #   source:    [from commonids.ValidateStorageAccountID] !ok
+  # path: storage_account_id
+  #   source:    [from commonids.ValidateStorageAccountID] err != nil
+  # path: traffic_analytics.workspace_resource_id
+  #   source:    [from azure.ValidateResourceIDOrEmpty] !ok
+  # path: traffic_analytics.interval_in_minutes
+  #   source:    validation.IntInSlice(...) - no translation rule yet, add one
+  # path: location
+  #   source:    location.EnhancedValidate: no recognizable `if ... { errors = append(...) }` pattern - read it by hand
+  # path: tags
+  #   condition: length(value) <= 50
+  #   message:   [from tags.Validate: invalid when len(value) > 50]
+  #   source:    [from tags.Validate: invalid when len(value) > 50]
+  # path: tags
+  #   condition: length(value) <= 512
+  #   message:   [from tags.Validate: invalid when len(value) > 512]
+  #   source:    [from tags.Validate: invalid when len(value) > 512]
+  # path: tags
+  #   source:    [from tags.Validate] err != nil
+  # path: tags
+  #   condition: length(value) <= 256
+  #   message:   [from tags.Validate: invalid when len(value) > 256]
+  #   source:    [from tags.Validate: invalid when len(value) > 256]
 }
 
