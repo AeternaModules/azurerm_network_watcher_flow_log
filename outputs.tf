@@ -1,3 +1,7 @@
+output "network_watcher_flow_logs_id" {
+  description = "Map of id values across all network_watcher_flow_logs, keyed the same as var.network_watcher_flow_logs"
+  value       = { for k, v in azurerm_network_watcher_flow_log.network_watcher_flow_logs : k => v.id }
+}
 output "network_watcher_flow_logs_enabled" {
   description = "Map of enabled values across all network_watcher_flow_logs, keyed the same as var.network_watcher_flow_logs"
   value       = { for k, v in azurerm_network_watcher_flow_log.network_watcher_flow_logs : k => v.enabled }
