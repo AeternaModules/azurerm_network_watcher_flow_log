@@ -34,35 +34,19 @@ EOT
     network_security_group_id = optional(string)
     tags                      = optional(map(string))
     target_resource_id        = optional(string)
-    version                   = optional(number) # Default: 1
+    version                   = optional(number)
     retention_policy = object({
       days    = number
       enabled = bool
     })
     traffic_analytics = optional(object({
       enabled               = bool
-      interval_in_minutes   = optional(number) # Default: 60
+      interval_in_minutes   = optional(number)
       workspace_id          = string
       workspace_region      = string
       workspace_resource_id = string
     }))
   }))
-  validation {
-    condition = alltrue([
-      for k, v in var.network_watcher_flow_logs : (
-        v.traffic_analytics == null || (can(regex("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$", v.traffic_analytics.workspace_id)))
-      )
-    ])
-    error_message = "must be a valid UUID"
-  }
-  validation {
-    condition = alltrue([
-      for k, v in var.network_watcher_flow_logs : (
-        v.version == null || (v.version >= 1 && v.version <= 2)
-      )
-    ])
-    error_message = "must be between 1 and 2"
-  }
   # --- Unconfirmed validation candidates, derived from azurerm_network_watcher_flow_log's provider source ---
   # Not auto-enabled: either a bespoke provider validator we can't safely translate,
   # or a path that crosses a list-typed block (needs its own for_each wrapping).
@@ -91,10 +75,16 @@ EOT
   #   source:    [from commonids.ValidateStorageAccountID] !ok
   # path: storage_account_id
   #   source:    [from commonids.ValidateStorageAccountID] err != nil
+  # path: traffic_analytics.workspace_id
+  #   condition: can(regex("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$", value))
+  #   message:   must be a valid UUID
   # path: traffic_analytics.workspace_resource_id
   #   source:    [from azure.ValidateResourceIDOrEmpty] !ok
   # path: traffic_analytics.interval_in_minutes
   #   source:    validation.IntInSlice(...) - no translation rule yet, add one
+  # path: version
+  #   condition: value >= 1 && value <= 2
+  #   message:   must be between 1 and 2
   # path: location
   #   source:    location.EnhancedValidate: no recognizable `if ... { errors = append(...) }` pattern - read it by hand
   # path: tags
