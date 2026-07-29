@@ -7,14 +7,13 @@ Required:
     - network_watcher_name
     - resource_group_name
     - storage_account_id
+    - target_resource_id
     - retention_policy (block):
         - days (required)
         - enabled (required)
 Optional:
     - location
-    - network_security_group_id
     - tags
-    - target_resource_id
     - version
     - traffic_analytics (block):
         - enabled (required)
@@ -25,16 +24,15 @@ Optional:
 EOT
 
   type = map(object({
-    enabled                   = bool
-    name                      = string
-    network_watcher_name      = string
-    resource_group_name       = string
-    storage_account_id        = string
-    location                  = optional(string)
-    network_security_group_id = optional(string)
-    tags                      = optional(map(string))
-    target_resource_id        = optional(string)
-    version                   = optional(number)
+    enabled              = bool
+    name                 = string
+    network_watcher_name = string
+    resource_group_name  = string
+    storage_account_id   = string
+    target_resource_id   = string
+    location             = optional(string)
+    tags                 = optional(map(string))
+    version              = optional(number)
     retention_policy = object({
       days    = number
       enabled = bool

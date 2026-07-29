@@ -14,10 +14,6 @@ output "network_watcher_flow_logs_name" {
   description = "Map of name values across all network_watcher_flow_logs, keyed the same as var.network_watcher_flow_logs"
   value       = { for k, v in azurerm_network_watcher_flow_log.network_watcher_flow_logs : k => v.name if v.name != null && length(v.name) > 0 }
 }
-output "network_watcher_flow_logs_network_security_group_id" {
-  description = "Map of network_security_group_id values across all network_watcher_flow_logs, keyed the same as var.network_watcher_flow_logs"
-  value       = { for k, v in azurerm_network_watcher_flow_log.network_watcher_flow_logs : k => v.network_security_group_id if v.network_security_group_id != null && length(v.network_security_group_id) > 0 }
-}
 output "network_watcher_flow_logs_network_watcher_name" {
   description = "Map of network_watcher_name values across all network_watcher_flow_logs, keyed the same as var.network_watcher_flow_logs"
   value       = { for k, v in azurerm_network_watcher_flow_log.network_watcher_flow_logs : k => v.network_watcher_name if v.network_watcher_name != null && length(v.network_watcher_name) > 0 }
