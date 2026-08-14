@@ -28,7 +28,7 @@ output "network_watcher_flow_logs_resource_group_name" {
 }
 output "network_watcher_flow_logs_retention_policy" {
   description = "Map of retention_policy values across all network_watcher_flow_logs, keyed the same as var.network_watcher_flow_logs"
-  value       = { for k, v in azurerm_network_watcher_flow_log.network_watcher_flow_logs : k => v.retention_policy if v.retention_policy != null && length(v.retention_policy) > 0 }
+  value       = { for k, v in azurerm_network_watcher_flow_log.network_watcher_flow_logs : k => one(v.retention_policy) if v.retention_policy != null && length(v.retention_policy) > 0 }
 }
 output "network_watcher_flow_logs_storage_account_id" {
   description = "Map of storage_account_id values across all network_watcher_flow_logs, keyed the same as var.network_watcher_flow_logs"
@@ -44,7 +44,7 @@ output "network_watcher_flow_logs_target_resource_id" {
 }
 output "network_watcher_flow_logs_traffic_analytics" {
   description = "Map of traffic_analytics values across all network_watcher_flow_logs, keyed the same as var.network_watcher_flow_logs"
-  value       = { for k, v in azurerm_network_watcher_flow_log.network_watcher_flow_logs : k => v.traffic_analytics if v.traffic_analytics != null && length(v.traffic_analytics) > 0 }
+  value       = { for k, v in azurerm_network_watcher_flow_log.network_watcher_flow_logs : k => one(v.traffic_analytics) if v.traffic_analytics != null && length(v.traffic_analytics) > 0 }
 }
 output "network_watcher_flow_logs_version" {
   description = "Map of version values across all network_watcher_flow_logs, keyed the same as var.network_watcher_flow_logs"
